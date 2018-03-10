@@ -35,10 +35,10 @@ func TestCassandraStore(t *testing.T) {
 
 	// Round 1 ----------------------------------------------------------------
 
-	store, err := NewCassandraStore(["127.0.0.1", "sessiontest",
+	store, err := NewCassandraStore([]string{"127.0.0.1"}, "sessiontest",
 		"sessionstore", "/", 3600, []byte("secret-key"))
 	if err != nil {
-		t.Fatalf("Error connecting to MySQL: ", err)
+		t.Fatalf("Error connecting to Cassandra: ", err)
 	}
 	defer store.Close()
 

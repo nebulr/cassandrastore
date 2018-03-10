@@ -10,7 +10,6 @@ import (
 	"github.com/gocql/gocql"
 	"encoding/gob"
 	"errors"
-	"fmt"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"log"
@@ -57,7 +56,7 @@ func NewCassandraStore(hosts []string, keyspace string, tableName string, path s
 
 func NewCassandraStoreFromConnection(db *gocql.Session, tableName string, path string, maxAge int, keyPairs ...[]byte) (*CassandraStore, error) {
 	// Make sure table name is enclosed.
-	tableName = "`" + strings.Trim(tableName, "`") + "`"
+	tableName = strings.Trim(tableName, "`")
 
 	cTableQ := "CREATE TABLE IF NOT EXISTS " +
 		tableName + " (id uuid, " +
@@ -176,7 +175,7 @@ func (m *CassandraStore) insert(session *sessions.Session) error {
 
 	id, _ = gocql.RandomUUID();
 
-	insErr := m.db.Query(stmtInsert, id, encoded, createdOn, modifiedOn, expiresOn).Exec()
+	insErr := m.db.Query(m.stmtInsert, id, encoded, createdOn, modifiedOn, expiresOn).Exec()
 
 	if insErr != nil {
 		return insErr
@@ -198,7 +197,7 @@ func (m *CassandraStore) Delete(r *http.Request, w http.ResponseWriter, session 
 		delete(session.Values, k)
 	}
 
-	delErr := m.db.Query(stmtDelete, session.ID).Exec()
+	delErr := m.db.Query(m.stmtDelete, session.ID).Exec()
 	if delErr != nil {
 		return delErr
 	}
@@ -237,7 +236,7 @@ func (m *CassandraStore) save(session *sessions.Session) error {
 	if encErr != nil {
 		return encErr
 	}
-	updErr := m.db.Query(stmtUpdate, encoded, createdOn, expiresOn, modifiedOn, session.ID).Exec()
+	updErr := m.db.Query(m.stmtUpdate, encoded, createdOn, expiresOn, modifiedOn, session.ID).Exec()
 	if updErr != nil {
 		return updErr
 	}
@@ -246,7 +245,7 @@ func (m *CassandraStore) save(session *sessions.Session) error {
 
 func (m *CassandraStore) load(session *sessions.Session) error {
 	sess := sessionRow{}
-	scanErr := m.db.Query(stmtSelect, session.ID).Scan(&sess.id, &sess.data, &sess.createdOn, &sess.modifiedOn, &sess.expiresOn)
+	scanErr := m.db.Query(m.stmtSelect, session.ID).Scan(&sess.id, &sess.data, &sess.createdOn, &sess.modifiedOn, &sess.expiresOn)
 	if scanErr != nil {
 		return scanErr
 	}
