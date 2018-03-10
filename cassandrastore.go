@@ -1,6 +1,6 @@
-/* Gorilla Sessions backend for MySQL.
+/* Gorilla Sessions backend for Cassandra.
 
-Copyright (c) 2013 Contributors. See the list of contributors in the CONTRIBUTORS file for details.
+Copyright (c) 2018 Contributors. See the list of contributors in the CONTRIBUTORS file for details.
 
 This software is licensed under a MIT style license available in the LICENSE file.
 */
