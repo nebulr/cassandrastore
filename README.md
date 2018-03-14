@@ -45,7 +45,7 @@ e.g.,
       }
 
     func main() {
-        store, err := cassandrastore.CassandraStore([]string{"127.0.0.1"}, <keyspace>, <tablename>, "/", 3600, []byte("<SecretKey>"))
+        store, err := cassandrastore.NewCassandraStore([]string{"127.0.0.1"}, <keyspace>, <tablename>, "/", 3600, []byte("<SecretKey>"))
         if err != nil {
           panic(err)
         }
